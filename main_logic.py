@@ -3,6 +3,11 @@ from datetime import date
 from pprint import pprint
 import sqlite3
 
+
+def bd_info_check():
+    pass
+
+
 def calculate_age(born):
     born = born.split('.')
     today = date.today()
@@ -34,7 +39,8 @@ def get_user_info(user_id, access_token):
     if 'bdate' in target_user_info.keys() and len(target_user_info['bdate'])>6:
             pass
     else:
-        target_user_info['bdate']= input('Не достаточно данных. Введите дату рождения в формате дд.мм.гггг ')
+        return target_user_info
+        # target_user_info['bdate']= input('Не достаточно данных. Введите дату рождения в формате дд.мм.гггг ')
 
 
     if 'city' in target_user_info.keys():

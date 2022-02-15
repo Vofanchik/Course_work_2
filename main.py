@@ -40,10 +40,14 @@ for event in longpoll.listen():
             if re.match(r'\d{1,9}', request):
                 try:
                     list_id_photo = main_logic.get_user_info(request, access_token=token_app)
-                    list_id_photo = [t for t in list_id_photo if t[0] not in db.return_ids()]
-                    write_msg(event.user_id, f'https://vk.com/id{list_id_photo[count][0]}', list_id_photo[count][1])
-                    count +=1
-                    db.insert_data(list_id_photo[0][0])
+                    print(list_id_photo)
+                    if type(list_id_photo) == dict and not 'bday' in list_id_photo:
+                        write_msg(event.user_id, 'Укажите дату рождения в формате дд.мм.гггг')
+                    else:
+                        list_id_photo = [t for t in list_id_photo if t[0] not in db.return_ids()]
+                        write_msg(event.user_id, f'https://vk.com/id{list_id_photo[count][0]}', list_id_photo[count][1])
+                        count +=1
+                        db.insert_data(list_id_photo[0][0])
                 except:
                     write_msg(event.user_id, "Возникла проблемма, попробуйте другой ID")
 
