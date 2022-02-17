@@ -3,11 +3,6 @@ from datetime import date
 from pprint import pprint
 import sqlite3
 
-
-def bd_info_check():
-    pass
-
-
 def calculate_age(born):
     born = born.split('.')
     today = date.today()
@@ -46,7 +41,8 @@ def get_user_info(user_id, access_token):
     if 'city' in target_user_info.keys():
         pass
     else:
-        target_user_info['city']= city_search(input('Не достаточно данных. Введите город '), access_token)
+        return target_user_info
+        # target_user_info['city']= city_search(input('Не достаточно данных. Введите город '), access_token)
 
 
     return match_search(target_user_info, access_token)
@@ -115,7 +111,6 @@ def urls_photo_search(target_persons, access_token):
 
     return list_of_all_photo_urls
 
-# get_user_info(user_id, token = '7483c75e8713a3971008776c2ac06f57534d3cea017e77a812ef4e7b16e5cc6259cbfc7d7e98cf52fc212')
 
 class DB:
     def __init__(self):
@@ -135,11 +130,7 @@ class DB:
         self.c.execute('SELECT * FROM People')
         return [i[0] for i in self.c.fetchall()]
 
-# db = DB()
-# #
-# # db.insert_data('5555')
-# # db.insert_data(5554)
-# print(db.return_ids())
+
 
 
 

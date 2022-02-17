@@ -32,17 +32,20 @@ def write_msg(user_id, message='', images=[]):
         random_id=randrange(10 ** 7)
     )
 list_id_photo = []
+lack_data = {}
 count = 0
 for event in longpoll.listen():
     if event.type == VkEventType.MESSAGE_NEW:
         if event.to_me:
             request = event.text
-            if re.match(r'\d{1,9}', request):
+            if request.isdigit():
                 try:
                     list_id_photo = main_logic.get_user_info(request, access_token=token_app)
-                    print(list_id_photo)
-                    if type(list_id_photo) == dict and not 'bday' in list_id_photo:
-                        write_msg(event.user_id, 'Укажите дату рождения в формате дд.мм.гггг')
+                    if type(list_id_photo) is dict:
+                        lack_data = list_id_photo
+                        list_id_photo = []
+                        print(lack_data)
+                        write_msg(event.user_id, 'Укажите дату рождения в формате дд.мм.гггг и город через запятую')
                     else:
                         list_id_photo = [t for t in list_id_photo if t[0] not in db.return_ids()]
                         write_msg(event.user_id, f'https://vk.com/id{list_id_photo[count][0]}', list_id_photo[count][1])
@@ -50,6 +53,17 @@ for event in longpoll.listen():
                         db.insert_data(list_id_photo[0][0])
                 except:
                     write_msg(event.user_id, "Возникла проблемма, попробуйте другой ID")
+
+            elif bool(re.search(r'\d{1,2}\.\d{1,2}\.\d{4}\,\s?[а-яА-Я]+\s?[а-яА-Я]*\s?[а-яА-Я]*', request)):
+
+                info = request.split(',')
+                lack_data['city'] = main_logic.city_search(info[1], token_app)
+                lack_data['bdate'] = info[0]
+                list_id_photo = main_logic.match_search(lack_data, token_app)
+                list_id_photo = [t for t in list_id_photo if t[0] not in db.return_ids()]
+                write_msg(event.user_id, f'https://vk.com/id{list_id_photo[count][0]}', list_id_photo[count][1])
+                count += 1
+                db.insert_data(list_id_photo[0][0])
 
             elif request == 'далее':
                 if list_id_photo != []:
