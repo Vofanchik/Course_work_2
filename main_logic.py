@@ -1,7 +1,5 @@
 import requests
 from datetime import date
-from pprint import pprint
-import sqlite3
 
 def calculate_age(born):
     born = born.split('.')
@@ -112,23 +110,7 @@ def urls_photo_search(target_persons, access_token):
     return list_of_all_photo_urls
 
 
-class DB:
-    def __init__(self):
-        self.conn = sqlite3.connect('people.db')
-        self.c = self.conn.cursor()
-        self.c.execute(
-            '''CREATE TABLE IF NOT EXISTS People (ids INTEGER NOT NULL UNIQUE, 
-            UNIQUE ("ids") ON CONFLICT IGNORE)''')
-        self.conn.commit()
 
-    def insert_data(self, id):
-        self.c.execute('''INSERT INTO People(ids) VALUES (?)''',
-                       (id,))
-        self.conn.commit()
-
-    def return_ids(self):
-        self.c.execute('SELECT * FROM People')
-        return [i[0] for i in self.c.fetchall()]
 
 
 
